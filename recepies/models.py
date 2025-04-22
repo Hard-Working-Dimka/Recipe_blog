@@ -31,6 +31,21 @@ class Ingredient(models.Model):
         return self.name
 
 
+class FoodIntake(models.Model):  # завтрак/обед/ужин
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class TypeOfSubscription(models.Model):
+    period = models.IntegerField()
+    price = models.IntegerField()
+
+    def __str__(self):
+        return self.period
+
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to='users')
@@ -48,30 +63,16 @@ class Recipe(models.Model):
     likes = models.ManyToManyField(User, related_name='liked_recipes')  # TODO: на сайте нет, в ТЗ есть!
     calories = models.IntegerField()
     type_of_menu = models.ManyToManyField(TypeOfMenu, related_name='recipes')
+    food_intake = models.ManyToManyField(FoodIntake, related_name='recipes')
 
     def __str__(self):
         return self.title
 
 
-class TypeOfSubscription(models.Model):
-    period = models.IntegerField()
-    price = models.IntegerField()
-
-    def __str__(self):
-        return self.period
-
-
-class FoodIntake(models.Model):  # завтрак/обед/ужин
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
-
-
 class Order(models.Model):
     profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     type_of_subscription = models.ForeignKey(TypeOfSubscription, on_delete=models.CASCADE)
-    food_intake = models.ManyToManyField(FoodIntake)
+    food_intake = models.ManyToManyField(FoodIntake, related_name='orders')
     number_of_people = models.IntegerField(default=1)
     allergy = models.ManyToManyField(Allergy, related_name='orders')
     total_price = models.IntegerField()
