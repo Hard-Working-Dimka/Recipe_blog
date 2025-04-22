@@ -2,7 +2,14 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
-class Diet(models.Model):
+class Diet(models.Model):  # TODO: на сайте нет, в ТЗ есть!
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class TypeOfMenu(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
@@ -40,6 +47,7 @@ class Recipe(models.Model):
     slug = models.SlugField()  # для url путей
     likes = models.ManyToManyField(User, related_name='liked_recipes')
     calories = models.IntegerField()
+    type_of_menu = models.ManyToManyField(TypeOfMenu, related_name='recipes')
 
     def __str__(self):
         return self.title
@@ -47,12 +55,13 @@ class Recipe(models.Model):
 
 class TypeOfSubscription(models.Model):
     period = models.IntegerField()
+    price = models.IntegerField()
 
     def __str__(self):
         return self.period
 
 
-class FoodIntake(models.Model):
+class FoodIntake(models.Model):  # завтрак/обед/ужин
     name = models.CharField(max_length=100)
 
     def __str__(self):
@@ -65,6 +74,9 @@ class Order(models.Model):
     food_intake = models.ManyToManyField(FoodIntake)
     number_of_people = models.IntegerField()
     allergy = models.ManyToManyField(Allergy, related_name='orders')
+    total_price = models.IntegerField()
+    status = models.BooleanField(default=False)  # TODO:ДЛЯ ОПЛАТЫ,возможно , лишнее, подумать как сделать оплату
+    type_of_menu = models.ManyToManyField(TypeOfMenu, related_name='orders')
 
     def __str__(self):
         return self.profile.user
