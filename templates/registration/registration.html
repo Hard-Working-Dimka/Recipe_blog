@@ -1,4 +1,6 @@
 {% load static %}
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -54,23 +56,31 @@
           <div class="card px-5 py-3 d-flex align-items-center foodplan__shadow">
             <form method="post">
                   {% csrf_token %}
-    {{ form.as_p }}
               <h1 class="mb-4 text-center"><strong>Регистрация</strong></h1>
               <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Имя</label>
-                <input type="text" class="form-control" id="name">
+                <div>
+                {{ form.username|attr:"type:text"| as_crispy_field }}
+                  <style> .form-group label {display: none} </style>
+                </div>
               </div>
               <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                <div>
+                {{ form.email|attr:"type:email"| as_crispy_field }}
+                </div>
               </div>
               <div class="mb-3">
                 <label for="exampleInputPassword1" class="form-label">Пароль</label>
-                <input type="password" class="form-control" id="password">
+                <div>
+                {{ form.password|attr:"type:password"| as_crispy_field }}
+                </div>
               </div>
               <div class="mb-3">
                 <label for="exampleInputPassword1" class="form-label">Подтверждение пароля</label>
-                <input type="password" class="form-control" id="PasswordConfirm">
+                <div>
+                {{ form.password2|attr:"type:password"| as_crispy_field }}
+                </div>
               </div>
               <div class="row mb-3">
                 <div class="col-12 col-sm-6 mt-3">

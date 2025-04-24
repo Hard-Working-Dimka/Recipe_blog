@@ -1,6 +1,9 @@
 from pathlib import Path
 from environs import env
 
+
+# from recepies.EmailAuthBackend import EmailAuthBackend
+
 env.read_env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -65,6 +68,11 @@ DATABASES = {
     }
 }
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'recepies.EmailAuthBackend.EmailAuthBackend',
+]
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -91,6 +99,9 @@ USE_TZ = True
 STATIC_URL = env.str('STATIC_URL', default='static/')
 # STATIC_ROOT = env.path('STATIC_ROOT', default="static/") TODO: нижнюю строку удалить, эту раскоментить
 STATICFILES_DIRS = ['static']
+
+LOGOUT_REDIRECT_URL = "index"
+# LOGIN_REDIRECT_URL = 'profile'
 
 MEDIA_URL = env.str('MEDIA_URL', default="/media/")
 MEDIA_ROOT = BASE_DIR / env.path('MEDIA_ROOT', default="media/")

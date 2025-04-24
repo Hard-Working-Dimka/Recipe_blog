@@ -73,9 +73,9 @@
               <div class="mb-3">
                 <div class="d-flex align-items-center justify-content-between">
                   <label for="exampleInputPassword1" class="form-label">Пароль</label>
-                  <small><a href="{% url 'password_reset' %}" class="link-dark foodplan_green">Забыли пароль?</a></small>
+                  <small><a href="{% url 'password_change' %}" class="link-dark foodplan_green">Забыли пароль?</a></small>
                 </div>
-                {{ form.password|attr:"type:password"|as_crispy_field  }}
+                {{ form.password|attr:"type:password"|as_crispy_field }}
                 <style> .form-group label {display: none} </style>
               </div>
               <div class="row mb-3">
@@ -86,7 +86,7 @@
                   </button>
                 </div>
                 <div class="col-12 col-sm-6 mt-3 d-flex justify-content-center align-items-center">
-                  <small>Нет аккаунта? <a href="{% url "registration" %}" class="link-dark foodplan_green">Зарегистрируйтесь</a></small>
+                  <small>Нет аккаунта? <a href="{% url "index" %}" class="link-dark foodplan_green">Зарегистрируйтесь</a></small>
                 </div>
               </div>
             </form>
