@@ -9,7 +9,7 @@ urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('', show_index),
                   path('authentication/', show_auth),
-                  path('recipe/', show_card), #<int:id>/
+                  path('recipe/<slug:slug>/', show_card, name='recipe_detail'),
                   path('lk/', show_lk), #<int:id>/ TODO: добавить после моделей!
                   path('order/', show_order),
                   path('registration/', show_registration),
