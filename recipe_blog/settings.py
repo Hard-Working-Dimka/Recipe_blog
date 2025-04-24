@@ -19,7 +19,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'recepies.apps.RecepiesConfig',
+    'widget_tweaks',
+    'crispy_bootstrap4',
+    "crispy_forms"
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -51,14 +58,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'recipe_blog.wsgi.application'
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -75,7 +80,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 
@@ -83,11 +88,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 STATIC_URL = env.str('STATIC_URL', default='static/')
 # STATIC_ROOT = env.path('STATIC_ROOT', default="static/") TODO: нижнюю строку удалить, эту раскоментить
 STATICFILES_DIRS = ['static']
-
 
 MEDIA_URL = env.str('MEDIA_URL', default="/media/")
 MEDIA_ROOT = BASE_DIR / env.path('MEDIA_ROOT', default="media/")
