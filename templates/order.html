@@ -1,13 +1,11 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
   <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
     <link rel="stylesheet" href="{% static "style.css" %}">
     <title>Foodplan 2021 - Меню на неделю FOODPLAN</title>
   </head>
@@ -18,10 +16,8 @@
           <a class="navbar-brand" href="#">
             <img src="{% static "img/logo.8d8f24edbb5f.svg" %}" height="55" width="189" alt="">
           </a>
-          <h3 class="text-secondary mt-2 me-2">Стоимость: 00000₽</h3>
-          <button form="order" type="submit"
-                  class="btn shadow-none btn-sm btn-outline-success foodplan_green foodplan__border_green">Оплатить
-          </button>
+          <h3 class="text-secondary mt-2 me-2">Стоимость: <span id="total-price">000₽</span></h3>
+          <button form="order" type="submit" class="btn shadow-none btn-sm btn-outline-success foodplan_green foodplan__border_green">Оплатить</button>
         </div>
       </nav>
     </header>
@@ -29,52 +25,47 @@
       <section>
         <div class="container">
           <h1><strong class="foodplan_green">1 шаг </strong>до первого меню</h1>
-          <h5 class="text-secondary mb-3">Вам будет доступно 4 типа меню: Классическое, Низкоуглеводное, Вегетарианское
-            и Кето.</h5>
+          <h5 class="text-secondary mb-3">Вам будет доступно 4 типа меню: Классическое, Низкоуглеводное, Вегетарианское и Кето.</h5>
           <div class="row mb-5">
             <div class="col-6 col-md-3">
-
               <label for="classic" class="position-relative" style="cursor: pointer;">
-                <img src="{% static "img/menu_classical.png" %}" alt="" class="w-100">
-                <input form="order" type="radio" name="foodtype" id="classic" value="classic"
-                       class="foodplan_selected d-none">
+                <img src="{% static 'img/menu_classical.png' %}" alt="" class="w-100" />
+                <input form="order" type="radio" name="foodtype" id="classic" value="classic" class="foodplan_selected d-none" />
                 <div class="img_selected" id="img1"></div>
               </label>
             </div>
             <div class="col-6 col-md-3">
-
               <label for="low" class="position-relative" style="cursor: pointer;">
-                <img src="{% static "img/menu_nizkougl.png" %}" alt="" class="w-100">
-                <input form="order" type="radio" name="foodtype" id="low" value="low" class="foodplan_selected d-none">
+                <img src="{% static 'img/menu_nizkougl.png' %}" alt="" class="w-100" />
+                <input form="order" type="radio" name="foodtype" id="low" value="low" class="foodplan_selected d-none" />
                 <div class="img_selected" id="img2"></div>
               </label>
             </div>
             <div class="col-6 col-md-3">
-
               <label for="veg" class="position-relative" style="cursor: pointer;">
-                <img src="{% static "img/menu_veg.png" %}" alt="" class="w-100">
-                <input form="order" type="radio" name="foodtype" id="veg" value="veg" class="foodplan_selected d-none">
+                <img src="{% static 'img/menu_veg.png' %}" alt="" class="w-100" />
+                <input form="order" type="radio" name="foodtype" id="veg" value="veg" class="foodplan_selected d-none" />
                 <div class="img_selected" id="img3"></div>
               </label>
             </div>
             <div class="col-6 col-md-3">
-
               <label for="keto" class="position-relative" style="cursor: pointer;">
-                <img src="{% static "img/menu_keto.png" %}" alt="" class="w-100">
-                <input form="order" type="radio" name="foodtype" id="keto" value="keto"
-                       class="foodplan_selected d-none">
+                <img src="{% static 'img/menu_keto.png' %}" alt="" class="w-100" />
+                <input form="order" type="radio" name="foodtype" id="keto" value="keto" class="foodplan_selected d-none" />
                 <div class="img_selected" id="img4"></div>
               </label>
             </div>
           </div>
           <h2><strong>Выберите подходящий тариф</strong></h2>
-          <form id="order">
+          <form id="order" method="post" action="{% url 'order' %}">
+            {% csrf_token %}
             <table class="table text-center text-truncate mb-5">
               <tbody>
                 <tr>
                   <th scope="row" class="text-start">Срок</th>
                   <td>
-                    <select class="form-select">
+                    <select class="form-select" name="subscription_duration">
+                      >
                       <option value="0" selected>1 мес.</option>
                       <option value="1">3 мес.</option>
                       <option value="2">6 мес.</option>
@@ -135,44 +126,38 @@
                   <th scope="row" class="text-start">Аллергии</th>
                   <td>
                     <div class="form-check d-flex justify-content-start">
-                      <input class="form-check-input me-1 foodplan_checked-green" type="checkbox" value=""
-                             name="allergy1">
-                      <label class="form-check-label" for="allergy1">
+                      <input class="form-check-input me-1 foodplan_checked-green" type="checkbox" value="" name="allergy_fish" id="allergy_fish" />
+                      <label class="form-check-label" for="allergy_fish">
                         Рыба и морепродукты
                       </label>
                     </div>
                     <div class="form-check d-flex justify-content-start">
-                      <input class="form-check-input me-1 foodplan_checked-green" type="checkbox" value=""
-                             name="allergy2">
-                      <label class="form-check-label" for="allergy2">
+                      <input class="form-check-input me-1 foodplan_checked-green" type="checkbox" value="" name="allergy_meat" id="allergy_meat" />
+                      <label class="form-check-label" for="allergy_meat">
                         Мясо
                       </label>
                     </div>
                     <div class="form-check d-flex justify-content-start">
-                      <input class="form-check-input me-1 foodplan_checked-green" type="checkbox" value=""
-                             name="allergy3">
-                      <label class="form-check-label" for="allergy3">
+                      <input class="form-check-input me-1 foodplan_checked-green" type="checkbox" value="" name="allergy_grains" id="allergy_grains" />
+                      <label class="form-check-label" for="allergy_grains">
                         Зерновые
                       </label>
                     </div>
                     <div class="form-check d-flex justify-content-start">
-                      <input class="form-check-input me-1 foodplan_checked-green" type="checkbox" value=""
-                             name="allergy3">
-                      <label class="form-check-label" for="allergy3">
+                      <input class="form-check-input me-1 foodplan_checked-green" type="checkbox" value="" name="allergy_honey" id="allergy_honey" />
+                      <label class="form-check-label" for="allergy_honey">
                         Продукты пчеловодства
                       </label>
                     </div>
                     <div class="form-check d-flex justify-content-start">
-                      <input class="form-check-input me-1 foodplan_checked-green" type="checkbox" value=""
-                             name="allergy3">
-                      <label class="form-check-label" for="allergy3">
+                      <input class="form-check-input me-1 foodplan_checked-green" type="checkbox" value="" name="allergy_nuts" id="allergy_nuts" />
+                      <label class="form-check-label" for="allergy_nuts">
                         Орехи и бобовые
                       </label>
                     </div>
                     <div class="form-check d-flex justify-content-start">
-                      <input class="form-check-input me-1 foodplan_checked-green" type="checkbox" value=""
-                             name="allergy3">
-                      <label class="form-check-label" for="allergy3">
+                      <input class="form-check-input me-1 foodplan_checked-green" type="checkbox" value="" name="allergy_dairy" id="allergy_dairy" />
+                      <label class="form-check-label" for="allergy_dairy">
                         Молочные продукты
                       </label>
                     </div>
@@ -184,21 +169,20 @@
           </form>
 
           <form class="card d-flex flex-row align-items-baseline mb-5 p-3 foodplan__bg_grey">
-            <label for="exampleInputPassword1" class="form-label me-2">Промокод</label>
-            <input type="password" class="form-control me-2" id="password">
+            <label for="password" class="form-label me-2">Промокод</label>
+            <input type="password" class="form-control me-2" id="password" />
             <button type="submit" class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">
               Применить
             </button>
           </form>
           <div class="d-flex justify-content-center my-5">
-            <button form="order" type="submit"
-                    class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green w-50">Оплатить
-            </button>
+            <button form="order" type="submit" disabled class="btn shadow-none" class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green w-50">Оплатить</button>
+            <div id="form-message" class="alert d-none mt-3" role="alert"></div>
           </div>
         </div>
       </section>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"></script>
+    <script src="{% static 'main.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
   </body>
+</html>

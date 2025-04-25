@@ -62,13 +62,15 @@ class FoodIntake(models.Model):  # завтрак/обед/ужин
 class TypeOfSubscription(models.Model):
     period = models.IntegerField(verbose_name="Период (дней)")
     price = models.IntegerField(verbose_name="Цена")
+    name = models.CharField(max_length=100, verbose_name="Название подписки", blank=True)
 
     class Meta:
         verbose_name = "Тип подписки"
         verbose_name_plural = "Типы подписок"
 
     def __str__(self):
-        return str(self.period)
+        return self.name  # Возвращаем название подписки
+
 
 
 class UserProfile(models.Model):
@@ -80,6 +82,9 @@ class UserProfile(models.Model):
     class Meta:
         verbose_name = "Профиль пользователя"
         verbose_name_plural = "Профили пользователей"
+        
+    def __str__(self):
+        return self.user.email
 
 
 class Recipe(models.Model):
@@ -133,6 +138,11 @@ class Order(models.Model):
     type_of_menu = models.ManyToManyField(
         TypeOfMenu, related_name="orders", verbose_name="Типы меню"
     )
+    duration = models.IntegerField(default=False, verbose_name="Длительность подписки")  # добавлено
+    breakfasts = models.BooleanField(default=False, verbose_name="Завтрак включён")  # добавлено
+    lunches = models.BooleanField(default=False, verbose_name="Ужин включён")  # добавлено
+    dinners = models.BooleanField(default=False, verbose_name="Ужин включён")  # добавлено
+    desserts = models.BooleanField(default=False, verbose_name="Десерт включён")  # добавлено
 
     class Meta:
         verbose_name = "Заказ"
@@ -140,3 +150,4 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Заказ от {self.profile.user.username}"
+

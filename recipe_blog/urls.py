@@ -5,14 +5,14 @@ from django.urls import path
 from django.conf.urls.static import static
 
 from recepies import views
-from recepies.views import show_index, show_card
+from recepies.views import show_index, show_card, show_order
 from recipe_blog import settings
 
 urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('', show_index, name='index'),
                   path('recipe/<slug:slug>/', show_card, name='recipe_detail'),
-                  # path('order/', show_order),
+                  path('order/', show_order, name='order'),
                   # path('profile/', show_lk, name='profile'),
                   path('profile/', views.ProfileUser.as_view(), name='profile'),
 
