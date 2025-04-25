@@ -1,12 +1,15 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 
 from django.contrib.auth.forms import AuthenticationForm
+from django.views.generic import UpdateView
 
-from recepies.forms import RegisterUserForm
+from recepies.forms import RegisterUserForm, ProfileUserForm
 from recepies.models import Recipe
 
 
@@ -20,12 +23,12 @@ def show_card(request, slug):
     return render(request, 'card.html', {'recipe': recipe})
 
 
-@login_required
-def show_lk(request):
-    user_id = request.user.id
-    print(user_id)
-    # TODO: id юзера есть, кидаем в контекст все его данные
-    return render(request, 'registration/profile.html')
+# @login_required
+# def show_lk(request):
+#     user_id = request.user.id
+#     print(user_id)
+#     # TODO: id юзера есть, кидаем в контекст все его данные
+#     return render(request, 'registration/profile.html')
 
 
 class LoginUser(LoginView):
@@ -48,3 +51,16 @@ def register(request):
     else:
         form = RegisterUserForm()
     return render(request, 'registration/registration.html', {'form': form})
+
+
+class ProfileUser(LoginRequiredMixin, UpdateView):
+    model = get_user_model()
+    form_class = ProfileUserForm
+    template_name = 'registration/profile.html'
+    extra_context = {'title': "Профиль пользователя"}
+
+    def get_success_url(self):
+        return reverse_lazy('profile')
+
+    def get_object(self, queryset=None):
+        return self.request.user

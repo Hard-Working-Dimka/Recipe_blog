@@ -4,7 +4,7 @@ from django.urls import path
 from django.conf.urls.static import static
 
 from recepies import views
-from recepies.views import show_index, show_lk, show_card
+from recepies.views import show_index, show_card
 from recipe_blog import settings
 
 urlpatterns = [
@@ -12,7 +12,8 @@ urlpatterns = [
                   path('', show_index, name='index'),
                   path('recipe/<slug:slug>/', show_card, name='recipe_detail'),
                   # path('order/', show_order),
-                  path('profile/', show_lk, name='profile'),
+                  # path('profile/', show_lk, name='profile'),
+path('profile/', views.ProfileUser.as_view(), name='profile'),
 
                   path('login/', views.LoginUser.as_view(), name='login'),
                   path('logout/', LogoutView.as_view(), name='logout'),

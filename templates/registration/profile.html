@@ -1,4 +1,6 @@
 {% load static %}
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -43,7 +45,7 @@
                     href="#"
                     class="link-dark text-decoration-none align-middle">+</a></span>
               </div>
-              <h3 class="card-title text-center">Tim</h3>
+              <h3 class="card-title text-center">{{ request.user.first_name }}</h3>
               <div class="d-block">
                 <form action="{% url 'logout' %}" method="post">
                   {% csrf_token %}
@@ -69,18 +71,24 @@
               </ul>
               <div class="tab-content mt-2">
                 <div class="tab-pane fade show active" id="data">
-                  <form action="">
+                  <form method="post">
+                    {% csrf_token %}
                     <div class="mb-3">
                       <div class="d-flex align-items-center justify-content-between">
                         <label for="exampleInputEmail1" class="form-label">Имя</label>
                         <small><a href="#" class="link-dark foodplan_green">изменить</a></small>
                       </div>
 
-                      <input type="text" class="form-control" id="name">
+                      <div>
+                        {{ form.first_name|attr:"type:text"| as_crispy_field }}
+                         <style> .form-group label {display: none} </style>
+                      </div>
                     </div>
                     <div class="mb-3">
                       <label for="exampleInputEmail1" class="form-label">Email</label>
-                      <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                      <div>
+                        {{ form.email|attr:"type:email"| as_crispy_field }}
+                      </div>
                     </div>
                     <div class="mb-3">
                       <div class="d-flex align-items-center justify-content-between">
