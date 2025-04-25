@@ -1,11 +1,9 @@
 from django.contrib import admin
-from django.contrib.auth.views import LogoutView, PasswordResetView, PasswordResetConfirmView
 from django.urls import path
 from django.conf.urls.static import static
 
-from recepies import views
-from recepies.views import show_index, show_lk, show_card
 from recipe_blog import settings
+from recepies.views import show_index, show_auth, show_card, show_lk, show_order, show_registration
 
 urlpatterns = [
                   path('admin/', admin.site.urls),
