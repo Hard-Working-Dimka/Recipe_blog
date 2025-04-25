@@ -1,38 +1,31 @@
-from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+
+from django.contrib.auth.forms import AuthenticationForm
 
 from recepies.forms import RegisterUserForm
+from recepies.models import Recipe
 
 
 #
 def show_index(request):
     return render(request, 'index.html')
-#
-#
-# def show_auth(request):
-#     return render(request, '')
-#
-#
-# def show_card(request):
-#     return render(request, 'card.html')
+
+
+def show_card(request, slug):
+    recipe = get_object_or_404(Recipe, slug=slug)
+    return render(request, 'card.html', {'recipe': recipe})
+
 
 @login_required
 def show_lk(request):
     user_id = request.user.id
     print(user_id)
-    #TODO: id юзера есть, кидаем в контекст все его данные
+    # TODO: id юзера есть, кидаем в контекст все его данные
     return render(request, 'registration/profile.html')
-
-
-#
-# def show_order(request):
-#     return render(request, 'order.html')
 
 
 class LoginUser(LoginView):
@@ -55,4 +48,3 @@ def register(request):
     else:
         form = RegisterUserForm()
     return render(request, 'registration/registration.html', {'form': form})
-

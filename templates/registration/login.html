@@ -30,7 +30,8 @@
                 <button class="btn btn-outline-success me-2 shadow-none foodplan_green foodplan__border_green">
                   Подписка
                 </button>
-                <a href="{% url 'login' %}" class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green">Войти</a>
+                <a href="{% url 'login' %}"
+                   class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green">Войти</a>
               </li>
             </ul>
           </div>
@@ -58,8 +59,8 @@
 
               {% if form.errors %}
                 <div style="max-width: 350px; text-align: center; ">
-                <p>Email или пароль не совпадают!
-                Пожалуйста, повторите попытку.</p>
+                  <p>Email или пароль не совпадают!
+                    Пожалуйста, повторите попытку.</p>
                 </div>
               {% endif %}
 
@@ -73,10 +74,13 @@
               <div class="mb-3">
                 <div class="d-flex align-items-center justify-content-between">
                   <label for="exampleInputPassword1" class="form-label">Пароль</label>
-                  <small><a href="{% url 'password_change' %}" class="link-dark foodplan_green">Забыли пароль?</a></small>
+                  <small><a href="{% url 'password_reset' %}" class="link-dark foodplan_green">Забыли
+                    пароль?</a></small>
                 </div>
                 {{ form.password|attr:"type:password"|as_crispy_field }}
-                <style> .form-group label {display: none} </style>
+                <style> .form-group label {
+                    display: none
+                } </style>
               </div>
               <div class="row mb-3">
                 <div class="col-12 col-sm-6 mt-3">
@@ -86,7 +90,8 @@
                   </button>
                 </div>
                 <div class="col-12 col-sm-6 mt-3 d-flex justify-content-center align-items-center">
-                  <small>Нет аккаунта? <a href="{% url "index" %}" class="link-dark foodplan_green">Зарегистрируйтесь</a></small>
+                  <small>Нет аккаунта? <a href="{% url "register" %}"
+                                          class="link-dark foodplan_green">Зарегистрируйтесь</a></small>
                 </div>
               </div>
             </form>

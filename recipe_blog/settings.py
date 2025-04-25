@@ -1,9 +1,6 @@
 from pathlib import Path
 from environs import env
 
-
-# from recepies.EmailAuthBackend import EmailAuthBackend
-
 env.read_env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -101,7 +98,6 @@ STATIC_URL = env.str('STATIC_URL', default='static/')
 STATICFILES_DIRS = ['static']
 
 LOGOUT_REDIRECT_URL = "index"
-# LOGIN_REDIRECT_URL = 'profile'
 
 MEDIA_URL = env.str('MEDIA_URL', default="/media/")
 MEDIA_ROOT = BASE_DIR / env.path('MEDIA_ROOT', default="media/")
