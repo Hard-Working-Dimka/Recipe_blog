@@ -12,7 +12,7 @@ urlpatterns = [
                   path('', show_index, name='index'),
                   path('recipe/<slug:slug>/', show_card, name='recipe_detail'),
                   # path('order/', show_order),
-                  # path('accounts/', include('django.contrib.auth.urls')),
+                  path('profile/', show_lk, name='profile'),
 
                   path('login/', views.LoginUser.as_view(), name='login'),
                   path('logout/', LogoutView.as_view(), name='logout'),
@@ -24,5 +24,4 @@ urlpatterns = [
                   path('password-reset/<uidb64>/<token>/', PasswordResetConfirmView.as_view(),
                        name='password_reset_confirm'),
 
-                  path('profile/', show_lk, name='profile'),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
