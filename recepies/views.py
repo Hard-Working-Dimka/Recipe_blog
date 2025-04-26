@@ -63,18 +63,18 @@ def register(request):
 
 
 class ProfileUser(LoginRequiredMixin, UpdateView):
-    model = User  # Укажите модель
-    form_class = ProfileUserForm  # Укажите форму
-    template_name = 'registration/profile.html'  # Укажите шаблон
+    model = User
+    form_class = ProfileUserForm
+    template_name = 'registration/profile.html'
 
     def get_queryset(self):
-        return User.objects.filter(id=self.request.user.id)  # Получаем только текущего пользователя
+        return User.objects.filter(id=self.request.user.id)
 
     def get_object(self, queryset=None):
         return self.request.user
 
     def get(self, request, *args, **kwargs):
-        user = self.get_object()  # Получаем объект пользователя
+        user = self.get_object()
         user_profile, _ = UserProfile.objects.get_or_create(user=user)
         form = self.form_class(initial={'email': user.email, 'first_name': user.first_name})
 
@@ -88,22 +88,20 @@ class ProfileUser(LoginRequiredMixin, UpdateView):
         return render(request, self.template_name, context_data)
 
     def post(self, request, *args, **kwargs):
-        user = self.get_object()  # Получаем объект пользователя
+        user = self.get_object()
         form = self.form_class(request.POST, request.FILES)
 
         if form.is_valid():
-            # Сохраняем данные профиля
             user.email = form.cleaned_data['email']
             user.first_name = form.cleaned_data['first_name']
             user.save()
 
-            # Сохраняем аватарку
             user_profile = UserProfile.objects.get(user=user)
             if 'avatar' in form.cleaned_data and form.cleaned_data['avatar']:
                 user_profile.avatar = form.cleaned_data['avatar']
                 user_profile.save()
 
-            return redirect('profile')  # Перенаправление после успешного сохранения
+            return redirect('profile')
 
         return render(request, self.template_name, {'form1': form})
 
