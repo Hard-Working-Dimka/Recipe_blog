@@ -3,8 +3,10 @@ from enum import unique
 from django.contrib.auth import forms, get_user_model
 from django.contrib.auth.forms import AuthenticationForm
 from django.forms import ModelForm, CharField, PasswordInput, TextInput, ImageField
-from django.contrib.auth.models import User
+
 from django import forms
+
+from recepies.models import User
 
 
 class LoginUserForm(AuthenticationForm):
@@ -14,17 +16,14 @@ class LoginUserForm(AuthenticationForm):
 
 
 class RegisterUserForm(ModelForm):
-    username = CharField(label="Логин", )
+    username = CharField(label="Логин", required=False)
     password = CharField(label="Пароль", widget=PasswordInput)
     password2 = CharField(label="Повтор пароля", widget=PasswordInput)
 
     class Meta:
-        model = get_user_model()
+        model = User
         fields = ['username', 'email', 'first_name', 'password', 'password2']
-        labels = {
-            'email': 'E-mail',
-            'first_name': 'Имя',
-        }
+
 
     def clean_password2(self):
         cd = self.cleaned_data
@@ -37,6 +36,9 @@ class RegisterUserForm(ModelForm):
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("Такой E-mail уже существует!")
         return email
+
+    def clean_username(self):
+        return self.cleaned_data['username']
 
 
 class ProfileUserForm(forms.Form):

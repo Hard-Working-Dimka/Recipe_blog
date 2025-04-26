@@ -13,7 +13,6 @@ urlpatterns = [
                   path('', show_index, name='index'),
                   path('recipe/<slug:slug>/', show_card, name='recipe_detail'),
                   path('order/', show_order, name='order'),
-                  # path('profile/', show_lk, name='profile'),
                   path('profile/', views.ProfileUser.as_view(), name='profile'),
 
                   path('login/', views.LoginUser.as_view(), name='login'),

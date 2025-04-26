@@ -103,3 +103,5 @@ MEDIA_URL = env.str('MEDIA_URL', default="/media/")
 MEDIA_ROOT = BASE_DIR / env.path('MEDIA_ROOT', default="media")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'recepies.User'

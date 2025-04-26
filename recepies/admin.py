@@ -8,7 +8,7 @@ from .models import (
     TypeOfSubscription,
     UserProfile,
     Recipe,
-    Order,
+    Order, User,
 )
 
 
@@ -53,6 +53,11 @@ class UserProfileAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "avatar")
     raw_id_fields = ("user",)
 
+
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ("id", "username", "email")
+    # raw_id_fields = ("user",)
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):

@@ -1,6 +1,6 @@
 import os
 
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
@@ -32,14 +32,6 @@ def show_card(request, slug):
     return render(request, "card.html", {"recipe": recipe})
 
 
-# @login_required
-# def show_lk(request):
-#     user_id = request.user.id
-#     print(user_id)
-#     # TODO: id юзера есть, кидаем в контекст все его данные
-#     return render(request, 'registration/profile.html')
-
-
 class LoginUser(LoginView):
     form_class = AuthenticationForm
     template_name = "registration/login.html"
@@ -56,19 +48,16 @@ def register(request):
             user = form.save(commit=False)  # создание объекта без сохранения в БД
             user.set_password(form.cleaned_data["password"])
             user.save()
-            return render(request, "registration/profile.html")
+            login(request, user, backend="recepies.EmailAuthBackend.EmailAuthBackend")
+            return redirect("profile")
     else:
         form = RegisterUserForm()
     return render(request, "registration/registration.html", {"form": form})
 
 
 class ProfileUser(LoginRequiredMixin, UpdateView):
-    model = User
     form_class = ProfileUserForm
     template_name = 'registration/profile.html'
-
-    def get_queryset(self):
-        return User.objects.filter(id=self.request.user.id)
 
     def get_object(self, queryset=None):
         return self.request.user
