@@ -1,4 +1,7 @@
+import random
+
 from django.contrib.auth import get_user_model, login
+
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -21,7 +24,9 @@ from django.contrib.auth.decorators import login_required
 
 
 def show_index(request):
-    return render(request, "index.html")
+    recipes = list(Recipe.objects.all())
+    random_recipes = random.sample(recipes, 3) if len(recipes) >= 3 else recipes
+    return render(request, 'index.html', {'random_recipes': random_recipes})
 
 
 def show_card(request, slug):
