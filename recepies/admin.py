@@ -6,7 +6,6 @@ from .models import (
     Ingredient,
     FoodIntake,
     TypeOfSubscription,
-    UserProfile,
     Recipe,
     Order, User,
 )
@@ -47,11 +46,6 @@ class TypeOfSubscriptionAdmin(admin.ModelAdmin):
     list_display = ("id", "period", "price")
     list_filter = ("period", "price")
 
-
-@admin.register(UserProfile)
-class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "avatar")
-    raw_id_fields = ("user",)
 
 
 @admin.register(User)

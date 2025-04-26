@@ -1,13 +1,10 @@
-import os
-
 from django.contrib.auth import get_user_model, login
-from django.contrib.auth.decorators import login_required
+
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
+
 from django.contrib.auth.views import LoginView
 
-from recipe_blog import settings
-from .models import UserProfile
+
 from django.http import JsonResponse
 from .models import Order, TypeOfSubscription, FoodIntake, Allergy, TypeOfMenu
 
@@ -64,11 +61,11 @@ class ProfileUser(LoginRequiredMixin, UpdateView):
 
     def get(self, request, *args, **kwargs):
         user = self.get_object()
-        user_profile, _ = UserProfile.objects.get_or_create(user=user)
+
         form = self.form_class(initial={'email': user.email, 'first_name': user.first_name})
 
         context_data = {
-            'avatar': user_profile.avatar,
+            'avatar': user.avatar,
             'email': user.email,
             'first_name': user.first_name,
             'form1': form,
@@ -83,12 +80,9 @@ class ProfileUser(LoginRequiredMixin, UpdateView):
         if form.is_valid():
             user.email = form.cleaned_data['email']
             user.first_name = form.cleaned_data['first_name']
+            user.avatar = form.cleaned_data['avatar']
             user.save()
 
-            user_profile = UserProfile.objects.get(user=user)
-            if 'avatar' in form.cleaned_data and form.cleaned_data['avatar']:
-                user_profile.avatar = form.cleaned_data['avatar']
-                user_profile.save()
 
             return redirect('profile')
 

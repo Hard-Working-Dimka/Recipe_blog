@@ -4,6 +4,14 @@ from django.db import models
 
 class User(AbstractUser):
     username = models.CharField(max_length=150, unique=False, blank=True, null=True)
+    avatar = models.ImageField(upload_to="users", verbose_name="Аватар", null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Профиль пользователя"
+        verbose_name_plural = "Профили пользователей"
+
+    def __str__(self):
+        return self.email
 
 
 class Diet(models.Model):
@@ -76,20 +84,6 @@ class TypeOfSubscription(models.Model):
 
 
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, verbose_name="Пользователь"
-    )
-    avatar = models.ImageField(upload_to="users", verbose_name="Аватар")
-
-    class Meta:
-        verbose_name = "Профиль пользователя"
-        verbose_name_plural = "Профили пользователей"
-        
-    def __str__(self):
-        return self.user.email
-
-
 class Recipe(models.Model):
     title = models.CharField(max_length=100, verbose_name="Название")
     image = models.ImageField(verbose_name="Изображение")
@@ -124,7 +118,7 @@ class Recipe(models.Model):
 
 class Order(models.Model):
     profile = models.ForeignKey(
-        UserProfile, on_delete=models.CASCADE, verbose_name="Профиль"
+        User, on_delete=models.CASCADE, verbose_name="Профиль"
     )
     type_of_subscription = models.ForeignKey(
         TypeOfSubscription, on_delete=models.CASCADE, verbose_name="Подписка"
@@ -153,4 +147,3 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Заказ от {self.profile.user.username}"
-
