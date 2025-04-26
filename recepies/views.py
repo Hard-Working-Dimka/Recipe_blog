@@ -1,12 +1,17 @@
+import os
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
+
+from recipe_blog import settings
 from .models import UserProfile
 from django.http import JsonResponse
 from .models import Order, TypeOfSubscription, FoodIntake, Allergy, TypeOfMenu
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 
 from django.contrib.auth.forms import AuthenticationForm
@@ -58,16 +63,50 @@ def register(request):
 
 
 class ProfileUser(LoginRequiredMixin, UpdateView):
-    model = get_user_model()
-    form_class = ProfileUserForm
-    template_name = "registration/profile.html"
-    extra_context = {"title": "Профиль пользователя"}
+    model = User  # Укажите модель
+    form_class = ProfileUserForm  # Укажите форму
+    template_name = 'registration/profile.html'  # Укажите шаблон
 
-    def get_success_url(self):
-        return reverse_lazy("profile")
+    def get_queryset(self):
+        return User.objects.filter(id=self.request.user.id)  # Получаем только текущего пользователя
 
     def get_object(self, queryset=None):
         return self.request.user
+
+    def get(self, request, *args, **kwargs):
+        user = self.get_object()  # Получаем объект пользователя
+        user_profile, _ = UserProfile.objects.get_or_create(user=user)
+        form = self.form_class(initial={'email': user.email, 'first_name': user.first_name})
+
+        context_data = {
+            'avatar': user_profile.avatar,
+            'email': user.email,
+            'first_name': user.first_name,
+            'form1': form,
+        }
+
+        return render(request, self.template_name, context_data)
+
+    def post(self, request, *args, **kwargs):
+        user = self.get_object()  # Получаем объект пользователя
+        form = self.form_class(request.POST, request.FILES)
+
+        if form.is_valid():
+            # Сохраняем данные профиля
+            user.email = form.cleaned_data['email']
+            user.first_name = form.cleaned_data['first_name']
+            user.save()
+
+            # Сохраняем аватарку
+            user_profile = UserProfile.objects.get(user=user)
+            if 'avatar' in form.cleaned_data and form.cleaned_data['avatar']:
+                user_profile.avatar = form.cleaned_data['avatar']
+                user_profile.save()
+
+            return redirect('profile')  # Перенаправление после успешного сохранения
+
+        return render(request, self.template_name, {'form1': form})
+
 
 @login_required
 def show_order(request):

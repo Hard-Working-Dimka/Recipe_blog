@@ -2,8 +2,9 @@ from enum import unique
 
 from django.contrib.auth import forms, get_user_model
 from django.contrib.auth.forms import AuthenticationForm
-from django.forms import ModelForm, CharField, PasswordInput, TextInput
+from django.forms import ModelForm, CharField, PasswordInput, TextInput, ImageField
 from django.contrib.auth.models import User
+from django import forms
 
 
 class LoginUserForm(AuthenticationForm):
@@ -38,18 +39,7 @@ class RegisterUserForm(ModelForm):
         return email
 
 
-class ProfileUserForm(ModelForm):
-    username = CharField(disabled=False, label='Логин', required=False )
+class ProfileUserForm(forms.Form):
     email = CharField(disabled=False, label='E-mail', )
-
-    class Meta:
-        model = get_user_model()
-        fields = ['username', 'email', 'first_name', 'last_name']
-        labels = {
-            'first_name': 'Имя',
-            'last_name': 'Фамилия',
-        }
-        widgets = {
-            'first_name': TextInput(attrs={'class': 'form-input'}),
-            'last_name': TextInput(attrs={'class': 'form-input'}),
-        }
+    avatar = ImageField(required=False)
+    first_name = CharField()

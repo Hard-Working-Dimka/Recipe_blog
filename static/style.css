@@ -1,5 +1,5 @@
 html {
-  height: 100%;
+    height: 100%;
 }
 
 body {
@@ -45,16 +45,19 @@ body {
 .foodplan_selected:checked ~ .img_selected {
     display: block;
 }
+
 .foodplan_selected1:hover ~ .img_selected {
     display: block;
     border: none;
     box-shadow: 0 0 30px #91B93E;
 }
-.foodplan_selected:hover:not(.foodplan_selected:checked)~.img_selected {
+
+.foodplan_selected:hover:not(.foodplan_selected:checked) ~ .img_selected {
     display: block;
     border: none;
     box-shadow: 0 0 15px #91B93E;
 }
+
 .img_selected {
     display: none;
     position: absolute;
@@ -116,9 +119,11 @@ body {
         text-align: center;
         justify-content: center;
     }
+
     .foodplan__head_bg {
         background-image: none;
     }
+
     .foodplan__story {
         max-width: 91vw;
     }
@@ -128,18 +133,22 @@ body {
     .foodplan__mobapp {
         background-image: none;
     }
+
     .foodplan__mobapp_desc {
         width: 100% !important;
         text-align: center;
         justify-content: center;
     }
+
     .carousel__container {
         width: 100% !important;
     }
+
     .w-md-50 {
         width: 100% !important;
         text-align: center;
     }
+
     .w-md-75 {
         width: 100% !important;
     }
@@ -155,12 +164,12 @@ body {
 
 @media (max-width: 992px) {
     .navbar__sideBtns {
-        display: none;   
+        display: none;
     }
 }
 
 .carousel-item__gradient {
-    background: linear-gradient(180deg, rgba(0,0,0,0.8),  rgba(0,0,0,0),  rgba(0,0,0,0));
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
 }
 
 .navbar__opacity {
@@ -170,45 +179,49 @@ body {
 }
 
 .carousel__button_prev {
-  width: auto;
+    width: auto;
 }
 
 .carousel__button_next {
-  width: auto;
+    width: auto;
 }
 
 @media (max-width: 576px) {
-  .carousel__button_prev {
-    left: -24px;
-  }
-  .carousel__button_next {
-    right: -24px;
-  }
+    .carousel__button_prev {
+        left: -24px;
+    }
+
+    .carousel__button_next {
+        right: -24px;
+    }
 }
 
 @media (min-width: 577px) {
-  .carousel__button_prev {
-    left: -36px;
-  }
-  .carousel__svg_prev {
-      width: 32px;
-      height: 32px;
-  }
-  .carousel__button_next {
-    right: -36px;
-  }
-  .carousel__svg_next {
-      width: 32px;
-      height: 32px;
-  }
+    .carousel__button_prev {
+        left: -36px;
+    }
+
+    .carousel__svg_prev {
+        width: 32px;
+        height: 32px;
+    }
+
+    .carousel__button_next {
+        right: -36px;
+    }
+
+    .carousel__svg_next {
+        width: 32px;
+        height: 32px;
+    }
 }
 
 .foodplan__tab-item {
-  border-bottom: #91B93E solid 1px;
+    border-bottom: #91B93E solid 1px;
 }
 
 .foodplan__tab-item .active {
-  border-bottom: #91B93E solid 3px !important;
+    border-bottom: #91B93E solid 3px !important;
 }
 
 .order__col {
