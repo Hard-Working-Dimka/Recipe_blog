@@ -1,9 +1,9 @@
-from django.contrib.auth import get_user_model, login
-
+from django.contrib import messages
+from django.contrib.auth import get_user_model, login, update_session_auth_hash
+import random
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.contrib.auth.views import LoginView
-
 
 from django.http import JsonResponse
 from .models import Order, TypeOfSubscription, FoodIntake, Allergy, TypeOfMenu
@@ -11,7 +11,7 @@ from .models import Order, TypeOfSubscription, FoodIntake, Allergy, TypeOfMenu
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.views.generic import UpdateView
 
 from recepies.forms import RegisterUserForm, ProfileUserForm
@@ -21,7 +21,9 @@ from django.contrib.auth.decorators import login_required
 
 
 def show_index(request):
-    return render(request, "index.html")
+    recipes = list(Recipe.objects.all())
+    random_recipes = random.sample(recipes, 3) if len(recipes) >= 3 else recipes
+    return render(request, 'index.html', {'random_recipes': random_recipes})
 
 
 def show_card(request, slug):
@@ -63,30 +65,43 @@ class ProfileUser(LoginRequiredMixin, UpdateView):
         user = self.get_object()
 
         form = self.form_class(initial={'email': user.email, 'first_name': user.first_name})
-
+        form2 = PasswordChangeForm(request.user)
         context_data = {
             'avatar': user.avatar,
             'email': user.email,
             'first_name': user.first_name,
             'form1': form,
+            'form2': form2,
         }
 
         return render(request, self.template_name, context_data)
 
     def post(self, request, *args, **kwargs):
-        user = self.get_object()
         form = self.form_class(request.POST, request.FILES)
+        form2 = PasswordChangeForm(request.user, request.POST)
+        if 'form1' in request.POST:
+            user = self.get_object()
+            if form.is_valid():
+                user.email = form.cleaned_data['email']
+                user.first_name = form.cleaned_data['first_name']
+                user.avatar = form.cleaned_data['avatar']
+                user.save()
+                return redirect('profile')
+            else:
+                user = self.get_object()
+                form = self.form_class(initial={'email': user.email, 'first_name': user.first_name})
+        if 'form2' in request.POST:
+            if form2.is_valid():
+                user = form2.save()
+                update_session_auth_hash(request, user)  # Important!
+                messages.success(request, 'Your password was successfully updated!')
+                return redirect('login')
+            else:
+                user = self.get_object()
+                form = self.form_class(initial={'email': user.email, 'first_name': user.first_name})
 
-        if form.is_valid():
-            user.email = form.cleaned_data['email']
-            user.first_name = form.cleaned_data['first_name']
-            user.avatar = form.cleaned_data['avatar']
-            user.save()
 
-
-            return redirect('profile')
-
-        return render(request, self.template_name, {'form1': form})
+        return render(request, self.template_name, {'form1': form, 'form2': form2})
 
 
 @login_required

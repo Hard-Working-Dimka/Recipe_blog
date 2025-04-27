@@ -11,7 +11,7 @@ from recipe_blog import settings
 urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('', show_index, name='index'),
-                  path('recipe/<slug:slug>/', show_card, name='recipe_detail'),
+                  path('recipe/<slug:slug>/', show_card, name='show_card'),
                   path('order/', show_order, name='order'),
                   path('profile/', views.ProfileUser.as_view(), name='profile'),
 
