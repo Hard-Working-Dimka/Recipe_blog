@@ -1,11 +1,19 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.core.validators import EmailValidator
 
 
 class User(AbstractUser):
     username = models.CharField(max_length=150, unique=False, blank=True, null=True)
     avatar = models.ImageField(upload_to="users", verbose_name="Аватар", null=True, blank=True)
-
+    email = models.EmailField(
+        verbose_name='Email адрес',
+        unique=True,  # Убедитесь, что email уникален
+        blank=False,  # Обязательное поле
+        null=False,
+        validators=[EmailValidator()],  # Валидация формата email
+        help_text='Введите действительный email адрес'
+    )
     class Meta:
         verbose_name = "Профиль пользователя"
         verbose_name_plural = "Профили пользователей"
@@ -146,4 +154,4 @@ class Order(models.Model):
         verbose_name_plural = "Заказы"
 
     def __str__(self):
-        return f"Заказ от {self.profile.user.username}"
+        return f"Заказ от {self.profile.username}"

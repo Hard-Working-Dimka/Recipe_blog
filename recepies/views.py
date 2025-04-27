@@ -1,6 +1,6 @@
 import random
 
-from django.contrib.auth import get_user_model, login
+from django.contrib.auth import login
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -14,7 +14,7 @@ from .models import Order, TypeOfSubscription, FoodIntake, Allergy, TypeOfMenu
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.views.generic import UpdateView
 
 from recepies.forms import RegisterUserForm, ProfileUserForm
@@ -60,38 +60,22 @@ def register(request):
 class ProfileUser(LoginRequiredMixin, UpdateView):
     form_class = ProfileUserForm
     template_name = 'registration/profile.html'
+    success_url = reverse_lazy('profile')
 
     def get_object(self, queryset=None):
         return self.request.user
 
-    def get(self, request, *args, **kwargs):
-        user = self.get_object()
-
-        form = self.form_class(initial={'email': user.email, 'first_name': user.first_name})
-
-        context_data = {
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        context.update({
+            'orders': Order.objects.filter(profile=user),
             'avatar': user.avatar,
-            'email': user.email,
-            'first_name': user.first_name,
-            'form1': form,
-        }
+            'user': user
+        })
+        return context
 
-        return render(request, self.template_name, context_data)
-
-    def post(self, request, *args, **kwargs):
-        user = self.get_object()
-        form = self.form_class(request.POST, request.FILES)
-
-        if form.is_valid():
-            user.email = form.cleaned_data['email']
-            user.first_name = form.cleaned_data['first_name']
-            user.avatar = form.cleaned_data['avatar']
-            user.save()
-
-
-            return redirect('profile')
-
-        return render(request, self.template_name, {'form1': form})
+    
 
 
 @login_required
@@ -101,13 +85,13 @@ def show_order(request):
         try:
             if not request.user.is_authenticated:
                 return JsonResponse({"error": "Пожалуйста, войдите в систему"}, status=401)
-            profile = request.user.userprofile
+            profile = current_user
 
             # Маппинги
             MENU_MAPPING = {
                 "classic": "Классическое",
-                "lowcarb": "Низкоуглеводное",
-                "vegetarian": "Вегетарианское",
+                "low": "Низкоуглеводное",
+                "veg": "Вегетарианское",
                 "keto": "Кето",
             }
             SUBSCRIPTION_MAPPING = {
@@ -120,9 +104,9 @@ def show_order(request):
                 "meat": "Мясо",
                 "honey": "Продукты пчеловодства",
                 "fish": "Рыба и морепродукты",
-                "cereals": "Зерновые",
+                "grains": "Зерновые",
                 "nuts": "Орехи и бобовые",
-                "milk": "Молочные продукты",
+                "dairy": "Молочные продукты",
             }
 
             # Меню
@@ -165,7 +149,7 @@ def show_order(request):
             print(
                 f"Цена: {total_price}, Персоны: {persons}, Приёмы пищи: {selected_meals}"
             )
-
+            
             # Создание заказа
             order = Order.objects.create(
                 profile=profile,
@@ -177,7 +161,7 @@ def show_order(request):
             order.food_intake.set(meals)
             order.allergy.set(allergies)
             order.type_of_menu.set([menu_obj])
-
+                
             print("Заказ создан:", order.id)
             return JsonResponse({"message": "Заказ успешно сохранён!"})
 
@@ -188,3 +172,6 @@ def show_order(request):
             return JsonResponse({"error": str(e)}, status=500)
 
     return render(request, "order.html")
+
+
+

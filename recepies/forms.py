@@ -41,7 +41,21 @@ class RegisterUserForm(ModelForm):
         return self.cleaned_data['username']
 
 
-class ProfileUserForm(forms.Form):
-    email = CharField(disabled=False, label='E-mail', )
-    avatar = ImageField(required=False)
-    first_name = CharField()
+
+class ProfileUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'avatar']
+        widgets = {
+            'avatar': forms.FileInput(attrs={
+                'class': 'd-none',
+                'id': 'id_avatar',
+                'accept': 'image/*'
+            })
+        }
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if commit:
+            instance.save()  # Сохраняем объект, если все ок
+        return instance

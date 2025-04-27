@@ -17,7 +17,9 @@
             <img src="{% static "img/logo.8d8f24edbb5f.svg" %}" height="55" width="189" alt="">
           </a>
           <h3 class="text-secondary mt-2 me-2">Стоимость: <span id="total-price">000₽</span></h3>
-          <button form="order" type="submit" class="btn shadow-none btn-sm btn-outline-success foodplan_green foodplan__border_green">Оплатить</button>
+          <a href="{% url 'index' %}" class="btn shadow-none btn-sm btn-outline-success foodplan_green foodplan__border_green">
+            На главную
+          </a>
         </div>
       </nav>
     </header>
