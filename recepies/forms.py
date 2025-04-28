@@ -42,20 +42,26 @@ class RegisterUserForm(ModelForm):
 
 
 
-class ProfileUserForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ['first_name', 'email', 'avatar']
-        widgets = {
-            'avatar': forms.FileInput(attrs={
-                'class': 'd-none',
-                'id': 'id_avatar',
-                'accept': 'image/*'
-            })
-        }
+class ProfileUserForm(forms.Form):
+    email = CharField(label='E-mail', )
+    avatar = ImageField(required=False)
+    first_name = CharField()
+    # email = CharField(disabled=False, label='E-mail', )
+    # avatar = ImageField(required=False)
+    # first_name = CharField()
+    # class Meta:
+    #     model = User
+    #     fields = ['first_name', 'email', 'avatar']
+    #     widgets = {
+    #         'avatar': forms.FileInput(attrs={
+    #             'class': 'd-none',
+    #             'id': 'id_avatar',
+    #             'accept': 'image/*'
+    #         })
+    #     }
 
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        if commit:
-            instance.save()  # Сохраняем объект, если все ок
-        return instance
+    # def save(self, commit=True):
+    #     instance = super().save(commit=False)
+    #     if commit:
+    #         instance.save()  # Сохраняем объект, если все ок
+    #     return instance

@@ -2,7 +2,6 @@ import random
 
 from django.contrib.auth import login
 
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.contrib.auth.views import LoginView
@@ -65,60 +64,51 @@ class ProfileUser(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('profile')
 
     def get_object(self, queryset=None):
-        user = self.request.user
-        self.object = user  # Явно устанавливаем self.object
-        return user
+        return self.request.user
 
     def get(self, request, *args, **kwargs):
         user = self.get_object()
         form = self.form_class(initial={
-            'email': user.email, 
-            'username': user.username, 
+            'email': user.email,
+            'avatar': user.avatar,
             'first_name': user.first_name
         })
         form2 = PasswordChangeForm(user)
-        context = self.get_context_data(**kwargs)
-        context.update({
+        context_data = ({
             'orders': Order.objects.filter(profile=user),
             'avatar': user.avatar,
             'user': user,
             'form1': form,
             'form2': form2,
         })
-        return self.render_to_response(context)
+        return render(request, self.template_name, context_data)
 
     def post(self, request, *args, **kwargs):
-        user = self.get_object()
+        form = self.form_class(request.POST, request.FILES)
         form2 = PasswordChangeForm(request.user, request.POST)
         if 'form1' in request.POST:
-             user = self.get_object()
-             if form.is_valid():
-                 user.email = form.cleaned_data['email']
-                 user.first_name = form.cleaned_data['first_name']
-                 user.avatar = form.cleaned_data['avatar']
-                 user.save()
-                 return redirect('profile')
-             else:
-                 user = self.get_object()
-                 form = self.form_class(initial={'email': user.email, 'first_name': user.first_name})
+            user = self.get_object()
+            if form.is_valid():
+                user.email = form.cleaned_data['email']
+                user.first_name = form.cleaned_data['first_name']
+                if form.cleaned_data['avatar'] is not None:
+                    user.avatar = form.cleaned_data['avatar']
+                user.save()
+                return redirect('profile')
+            else:
+                user = self.get_object()
+                form = self.form_class(initial={'email': user.email, 'first_name': user.first_name, 'avatar': user.avatar})
         if 'form2' in request.POST:
-             if form2.is_valid():
-                 user = form2.save()
-                 update_session_auth_hash(request, user)  # Important!
-                 messages.success(request, 'Your password was successfully updated!')
-                 return redirect('login')
-             else:
-                 user = self.get_object()
-                 form = self.form_class(initial={'email': user.email, 'first_name': user.first_name})
- 
- 
+            if form2.is_valid():
+                user = form2.save()
+                update_session_auth_hash(request, user)  # Important!
+                messages.success(request, 'Your password was successfully updated!')
+                return redirect('login')
+        else:
+            user = self.get_object()
+            form = self.form_class(initial={'email': user.email, 'first_name': user.first_name, 'avatar': user.avatar})
+
         return render(request, self.template_name, {'form1': form, 'form2': form2})
-
-    
-
-
-
-    
 
 
 @login_required
@@ -190,7 +180,7 @@ def show_order(request):
             print(
                 f"Цена: {total_price}, Персоны: {persons}, Приёмы пищи: {selected_meals}"
             )
-            
+
             # Создание заказа
             order = Order.objects.create(
                 profile=profile,
@@ -202,7 +192,7 @@ def show_order(request):
             order.food_intake.set(meals)
             order.allergy.set(allergies)
             order.type_of_menu.set([menu_obj])
-                
+
             print("Заказ создан:", order.id)
             return JsonResponse({"message": "Заказ успешно сохранён!"})
 
@@ -213,6 +203,3 @@ def show_order(request):
             return JsonResponse({"error": str(e)}, status=500)
 
     return render(request, "order.html")
-
-
-

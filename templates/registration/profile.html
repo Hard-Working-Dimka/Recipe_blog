@@ -20,10 +20,10 @@
           <a class="navbar-brand" href="#">
             <img src="{% static "img/logo.8d8f24edbb5f.svg" %}" height="55" width="189" alt="">
           </a>
-          <form action="{% url 'logout' %}" method="post">
+ <form action="{% url 'logout' %}" method="post">
             {% csrf_token %}
             <button class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green">Выйти</button>
-          </form>
+ </form >
         </div>
       </nav>
     </header>
@@ -39,8 +39,7 @@
             </div>
               
             <div class="card col-12 col-md-2 p-3 mb-3 d-flex flex-column align-items-center foodplan__shadow">
-              <form method="post" enctype="multipart/form-data">
-
+<form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="position-relative">
                   <!-- Аватар -->
@@ -50,23 +49,24 @@
                   {% else %}
                     <img src="{{ avatar.url }}" alt="" width="100" height="100" class="rounded-pill">
                   {% endif %}
-                  
+
                   <input type="file" name="avatar" id="id_avatar" class="d-none">
 
 <!-- Кнопка, которая вызывает выбор файла -->
                   <label for="id_avatar" class="badge rounded-circle position-absolute bottom-0 end-0 foodplan__bg_green avatar__plus" style="color: black">
                    +
                   </label>
-                  
-                  {{ form1.avatar|add_class:"d-none" }}
+
+                  {{ form.avatar|add_class:"d-none" }}
                 </div>
 
                 <script>
-                  document.getElementById("id_avatar").addEventListener("change", function () {
-                    // Находим родительскую форму
-                    var form = this.closest("form");
-                    // Отправляем форму
-                    form.submit();
+                  document.getElementById("id_avatar").addEventListener("change", function (e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                      const img = document.querySelector('img.rounded-pill');
+                      img.src = URL.createObjectURL(file);
+                    }
                   });
                 </script>
               
@@ -102,14 +102,15 @@
               <div class="tab-pane fade show active" id="data">
 
 
-                <div class="mb-3">
-                  <div class="d-flex align-items-center justify-content-between">
-                    <label for="exampleInputEmail1" class="form-label">Имя</label>
-                    <small>
-                      <button type="submit" name="form1" class="link-dark foodplan_green"
-                              style="border: none; background: none; padding: 0; cursor: pointer; text-decoration: underline;">
-                        изменить
-                      </button>
+
+                  <div class="mb-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                      <label for="exampleInputEmail1" class="form-label">Имя</label>
+                      <small>
+                        <button type="submit" name="form1" class="link-dark foodplan_green"
+                                style="border: none; background: none; padding: 0; cursor: pointer; text-decoration: underline;">
+                          изменить
+                        </button>
                     </small>
                   </div>
 
@@ -126,9 +127,9 @@
                     {{ form1.email|attr:"type:email"| as_crispy_field }}
                   </div>
                 </div>
-            </form>
-            <form method="post">
-              {% csrf_token %}
+ </form>
+ <form method="post">
+{% csrf_token %}
                                 <div class="mb-3">
                                   <div class="d-flex align-items-center justify-content-between">
                                     <label for="exampleInputPassword1" class="form-label">Пароль</label>
@@ -137,11 +138,11 @@
                                         изменить
                                       </button></small>
                                   </div>
-              
+
                                      <div>
                                     {{ form2.new_password1|attr:"type:password"| as_crispy_field }}
                                     </div>
-              
+
                                 </div>
                                 <div class="mb-3">
                                   <label for="exampleInputPassword1" class="form-label">Подтверждение пароля</label>
@@ -149,24 +150,24 @@
                                     {{ form2.new_password2|attr:"type:password"| as_crispy_field }}
                                     </div>
                                 </div>
-              
+
                                   <div class="mb-3">
                                   <label for="exampleInputPassword1" class="form-label">Старый пароль</label>
                                      <div>
                                     {{ form2.old_password|attr:"type:password"| as_crispy_field }}
                                     </div>
                                 </div>
-              
-              {#                  <div class="d-block">#}
-              {#                    <button type="submit" name="form1"#}
-              {#                            class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">#}
-              {#                      Сохранить#}
-              {#                      изменения#}
-              {#                    </button>#}
-              {#                  </div>#}
+
+{#                                <div class="d-block">#}
+{#                                  <button type="submit" name="form1"#}
+{#                                          class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">#}
+{#                                    Сохранить#}
+{#                                    изменения#}
+{#                                  </button>#}
+{#                                </div>#}
               </form>
-              
-                  </form>
+
+</form>
                 </div>
                 <div class="tab-pane fade" id="menu">
                   {% if orders %}
