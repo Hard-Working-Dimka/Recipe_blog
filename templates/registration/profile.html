@@ -58,15 +58,16 @@
                    +
                   </label>
                   
-                  {{ form1.avatar|add_class:"d-none" }}
+                  {{ form.avatar|add_class:"d-none" }}
                 </div>
 
                 <script>
-                  document.getElementById("id_avatar").addEventListener("change", function () {
-                    // Находим родительскую форму
-                    var form = this.closest("form");
-                    // Отправляем форму
-                    form.submit();
+                  document.getElementById("id_avatar").addEventListener("change", function (e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                      const img = document.querySelector('img.rounded-pill');
+                      img.src = URL.createObjectURL(file);
+                    }
                   });
                 </script>
               
@@ -114,7 +115,7 @@
                   </div>
 
                   <div>
-                    {{ form1.first_name|attr:"type:text"| as_crispy_field }}
+                    {{ form.first_name|attr:"type:text"| as_crispy_field }}
                     <style> .form-group label {
                         display: none
                     } </style>
@@ -123,7 +124,7 @@
                 <div class="mb-3">
                   <label for="exampleInputEmail1" class="form-label">Email</label>
                   <div>
-                    {{ form1.email|attr:"type:email"| as_crispy_field }}
+                    {{ form.email|attr:"type:email"| as_crispy_field }}
                   </div>
                 </div>
             </form>

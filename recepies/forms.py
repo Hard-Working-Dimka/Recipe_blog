@@ -45,7 +45,7 @@ class RegisterUserForm(ModelForm):
 class ProfileUserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['first_name', 'email', 'avatar']
+        fields = ['email', 'username', 'first_name', 'avatar']
         widgets = {
             'avatar': forms.FileInput(attrs={
                 'class': 'd-none',
