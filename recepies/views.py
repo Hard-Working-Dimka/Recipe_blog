@@ -7,7 +7,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.contrib.auth.views import LoginView
 
-
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
+from django.shortcuts import redirect
 from django.http import JsonResponse
 from .models import Order, TypeOfSubscription, FoodIntake, Allergy, TypeOfMenu
 
@@ -63,17 +65,58 @@ class ProfileUser(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('profile')
 
     def get_object(self, queryset=None):
-        return self.request.user
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
         user = self.request.user
+        self.object = user  # Явно устанавливаем self.object
+        return user
+
+    def get(self, request, *args, **kwargs):
+        user = self.get_object()
+        form = self.form_class(initial={
+            'email': user.email, 
+            'username': user.username, 
+            'first_name': user.first_name
+        })
+        form2 = PasswordChangeForm(user)
+        context = self.get_context_data(**kwargs)
         context.update({
             'orders': Order.objects.filter(profile=user),
             'avatar': user.avatar,
-            'user': user
+            'user': user,
+            'form1': form,
+            'form2': form2,
         })
-        return context
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        user = self.get_object()
+        form2 = PasswordChangeForm(request.user, request.POST)
+        if 'form1' in request.POST:
+             user = self.get_object()
+             if form.is_valid():
+                 user.email = form.cleaned_data['email']
+                 user.first_name = form.cleaned_data['first_name']
+                 user.avatar = form.cleaned_data['avatar']
+                 user.save()
+                 return redirect('profile')
+             else:
+                 user = self.get_object()
+                 form = self.form_class(initial={'email': user.email, 'first_name': user.first_name})
+        if 'form2' in request.POST:
+             if form2.is_valid():
+                 user = form2.save()
+                 update_session_auth_hash(request, user)  # Important!
+                 messages.success(request, 'Your password was successfully updated!')
+                 return redirect('login')
+             else:
+                 user = self.get_object()
+                 form = self.form_class(initial={'email': user.email, 'first_name': user.first_name})
+ 
+ 
+        return render(request, self.template_name, {'form1': form, 'form2': form2})
+
+    
+
+
 
     
 
@@ -83,8 +126,6 @@ def show_order(request):
     current_user = request.user
     if request.method == "POST":
         try:
-            if not request.user.is_authenticated:
-                return JsonResponse({"error": "Пожалуйста, войдите в систему"}, status=401)
             profile = current_user
 
             # Маппинги
