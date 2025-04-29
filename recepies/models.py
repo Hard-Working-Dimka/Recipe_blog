@@ -99,14 +99,14 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         Ingredient, related_name="recipes", verbose_name="Ингредиенты"
     )
-    diet = models.ManyToManyField(Diet, related_name="recipes", verbose_name="Диеты")
+    diet = models.ManyToManyField(Diet, related_name="recipes", verbose_name="Диеты", blank=True )
     allergy = models.ManyToManyField(
-        Allergy, related_name="recipes", verbose_name="Аллергии"
+        Allergy, related_name="recipes", verbose_name="Аллергии", blank=True 
     )
     pub_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")
     slug = models.SlugField(verbose_name="URL-имя")
     likes = models.ManyToManyField(
-        User, related_name="liked_recipes", verbose_name="Лайки"
+        User, related_name="liked_recipes", verbose_name="Лайки", blank=True 
     )
     calories = models.IntegerField(verbose_name="Калории")
     type_of_menu = models.ManyToManyField(
@@ -125,6 +125,8 @@ class Recipe(models.Model):
 
 
 class Order(models.Model):
+    recipes = models.ManyToManyField(Recipe, related_name="orders", verbose_name="Рецепты")
+
     profile = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name="Профиль"
     )

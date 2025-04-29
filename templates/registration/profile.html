@@ -70,8 +70,6 @@
                     }
                   });
                 </script>
-              
-
 
               <div class="text-center mt-2 w-100" style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                 <strong>
@@ -94,7 +92,13 @@
               <li class="nav-item foodplan__tab-item">
                 <button type="button" id="tab2" class="btn shadow-none foodplan__tab-button"
                         data-bs-toggle="tab" data-bs-target="#menu">
-                  Моё меню
+                  Мои заказы
+                </button>
+              </li>
+              <li class="nav-item foodplan__tab-item">
+                <button type="button" id="tab2" class="btn shadow-none foodplan__tab-button"
+                        data-bs-toggle="tab" data-bs-target="#recepies">
+                  Мои рецепты
                 </button>
               </li>
               <li class="nav-item foodplan__tab-item flex-grow-1"></li>
@@ -210,6 +214,40 @@
                       </div>
                   {% endif %}
               </div>
+
+              <div class="tab-pane fade" id="recepies">
+                {% if user_recipes %}
+                  <h4 class="mb-4">Ваши рецепты</h4>
+                  <div class="row">
+                    {% for recipe in user_recipes %}
+                      <div class="col-12 col-md-6 col-lg-4 mb-3">
+                        <div class="card h-100 foodplan__shadow">
+                          {% if recipe.image %}
+                            <img src="{{ recipe.image.url }}" class="card-img-top" alt="{{ recipe.title }}">
+                          {% endif %}
+                          <div class="card-body">
+                            <h5 class="card-title">{{ recipe.title }}</h5>
+                            <p class="card-text">{{ recipe.description|default:"Без описания" }}</p>
+              
+                            <p><strong>Калории:</strong> {{ recipe.calories }} ккал</p>
+                            <h6>Ингредиенты:</h6>
+                            <ul>
+                              {% for ingredient in recipe.ingredients.all %}
+                                <li>
+                                  {{ ingredient.name }} — {{ ingredient.quantity_of_ingredients }} г
+                                </li>
+                              {% endfor %}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  <div class="alert alert-info">
+                    У вас пока нет рецептов.
+                  </div>
+                {% endif %}
               </div>
 
             </div>

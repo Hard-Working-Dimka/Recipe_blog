@@ -1,7 +1,7 @@
 import random
 
 from django.contrib.auth import login
-
+from .models import Recipe
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -19,7 +19,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.views.generic import UpdateView
 
-from recepies.forms import RegisterUserForm, ProfileUserForm
+from recepies.forms import RegisterUserForm, ProfileUserForm 
 from recepies.models import Recipe
 
 from django.contrib.auth.decorators import login_required
@@ -78,13 +78,28 @@ class ProfileUser(LoginRequiredMixin, UpdateView):
             'avatar': user.avatar
         })
         form2 = PasswordChangeForm(user)
+        orders = Order.objects.filter(profile=user)
+
+        # Сюда фильтрация рецептов по всем его заказам:
+        user_recipes = Recipe.objects.none()
+        for order in orders:
+            filtered = Recipe.objects.filter(
+                type_of_menu__in=order.type_of_menu.all(),
+                food_intake__in=order.food_intake.all()
+            ).exclude(
+                allergy__in=order.allergy.all()
+            )
+            user_recipes = user_recipes | filtered
+        user_recipes = user_recipes.distinct()
+
         context = self.get_context_data(**kwargs)
         context.update({
-            'orders': Order.objects.filter(profile=user),
+            'orders': orders,
             'avatar': user.avatar,
             'user': user,
             'form1': form,
             'form2': form2,
+            'user_recipes': user_recipes,  # <- Добавить сюда!
         })
         return self.render_to_response(context)
 
@@ -220,4 +235,15 @@ def show_order(request):
     return render(request, "order.html")
 
 
+def profile_view(request):
+    recipes = Recipe.objects.all()  # или фильтровать только те рецепты, что относятся к пользователю
+    orders = Order.objects.filter(profile__user=request.user)
+    avatar = request.user.profile.avatar  # если аватар отдельным полем в профиле
+    form = ProfileUserForm(instance=request.user)
 
+    return render(request, 'your_profile_template.html', {
+        'orders': orders,
+        'recipes': recipes,
+        'avatar': avatar,
+        'form': form,
+    })
