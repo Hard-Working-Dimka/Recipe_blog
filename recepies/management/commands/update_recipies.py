@@ -3,7 +3,7 @@ import time
 from django.core.management.base import BaseCommand
 from recepies.models import Recipe, Order
 
-SLEEP_TIME = 10
+SLEEP_TIME = 30
 
 
 def update_recipies():

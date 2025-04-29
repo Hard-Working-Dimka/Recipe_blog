@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             if (response.ok) {
-                messageBox.textContent = "Форма успешно отправлена!";
+                messageBox.textContent = "Форма успешно отправлена! Перейдите в личный кабинет для оплаты";
                 messageBox.className = "alert alert-success mt-3";
             } else {
                 messageBox.textContent = "Ошибка при отправке. Попробуйте снова.";

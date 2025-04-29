@@ -13,6 +13,8 @@ urlpatterns = [
                   path('', show_index, name='index'),
                   path('recipe/<slug:slug>/', show_card, name='show_card'),
                   path('order/', show_order, name='order'),
+                  path('payment-confirm/<int:order_id>/', views.payment_confirm, name='payment_confirm'),
+                  path('payment-success/<int:order_id>/', views.payment_success, name='payment_success'),
                   path('profile/', views.ProfileUser.as_view(), name='profile'),
 
                   path('login/', views.LoginUser.as_view(), name='login'),

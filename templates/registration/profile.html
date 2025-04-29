@@ -181,9 +181,20 @@
                               <div class="list-group-item mb-3 foodplan__shadow">
                                   <div class="d-flex justify-content-between">
                                       <h5>Заказ #{{ order.id }}</h5>
-                                      <span class="badge {% if order.status %}bg-success{% else %}bg-warning{% endif %}">
+                                      <div class="text-center mt-3">
+                                        <span class="badge {% if order.status %}bg-success{% else %}bg-warning{% endif %}">
                                           {% if order.status %}Активен{% else %}Ожидает оплаты{% endif %}
-                                      </span>
+                                        </span>
+
+                                        {% if not order.status %}
+                                          <form method="post" action="{% url 'payment_confirm' order.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-outline-success foodplan_green foodplan__border_green px-5">
+                                              Подтвердить оплату
+                                            </button>
+                                          </form>
+                                        {% endif %}
+                                      </div>
                                   </div>
                                   <div class="row mt-2">
                                       <div class="col-md-6">

@@ -1,6 +1,8 @@
 import random
 
 from django.contrib.auth import login
+from django.template.defaultfilters import first
+
 from .models import Recipe
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -35,6 +37,19 @@ def show_card(request, slug):
     recipe = get_object_or_404(Recipe, slug=slug)
     return render(request, "card.html", {"recipe": recipe})
 
+@login_required
+def payment_confirm(request, order_id):
+    order = get_object_or_404(Order, id=order_id, profile=request.user)
+    return render(request, 'payment_confirm.html', {'order': order})
+
+@login_required
+def payment_success(request, order_id):
+    order = get_object_or_404(Order, id=order_id, profile=request.user)
+
+    order.status = True
+    order.save()
+
+    return render(request, 'payment_success.html', {'order': order})
 
 class LoginUser(LoginView):
     form_class = AuthenticationForm
@@ -81,16 +96,11 @@ class ProfileUser(LoginRequiredMixin, UpdateView):
         orders = Order.objects.filter(profile=user)
 
         # Сюда фильтрация рецептов по всем его заказам:
-        user_recipes = Recipe.objects.none()
+        user_recipes = []
         for order in orders:
-            filtered = Recipe.objects.filter(
-                type_of_menu__in=order.type_of_menu.all(),
-                food_intake__in=order.food_intake.all()
-            ).exclude(
-                allergy__in=order.allergy.all()
-            )
-            user_recipes = user_recipes | filtered
-        user_recipes = user_recipes.distinct()
+            user_recipe = order.recipes.all()
+            for recipe in user_recipe:
+                user_recipes.append(recipe)
 
         context = self.get_context_data(**kwargs)
         context.update({
@@ -210,6 +220,14 @@ def show_order(request):
             print(
                 f"Цена: {total_price}, Персоны: {persons}, Приёмы пищи: {selected_meals}"
             )
+
+            recipe = Recipe.objects.filter(
+                 type_of_menu=menu_obj,
+                 food_intake__in=meals
+            ).exclude(
+                 allergy__in=allergies,
+            ).first()
+            print(recipe)
             
             # Создание заказа
             order = Order.objects.create(
@@ -222,9 +240,11 @@ def show_order(request):
             order.food_intake.set(meals)
             order.allergy.set(allergies)
             order.type_of_menu.set([menu_obj])
+
+            order.recipes.add(recipe)
                 
             print("Заказ создан:", order.id)
-            return JsonResponse({"message": "Заказ успешно сохранён!"})
+            return redirect("payment_confirm", order_id=order.id)
 
         except Exception as e:
             import traceback
